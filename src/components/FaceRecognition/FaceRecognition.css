@@ -1,0 +1,27 @@
+.imageBox {
+    display: flex;
+    justify-content: center;
+    /* align-content: center; */
+    /* border: 1px solid white; */
+    margin: auto;
+    max-width: 500px;
+    height: auto;
+    opacity: 0.8;
+}
+
+.imageBox img {
+   object-fit: cover;
+   z-index: 1;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    background-color: blue;
+    /* position: fixed; */
+    /* z-index: 2; */
+    /* top: 0.21136431;
+    bottom: 0.21136431;
+    right: 0.7453326;
+    left: 0.6825799; */
+}
