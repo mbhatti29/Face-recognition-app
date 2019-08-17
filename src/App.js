@@ -49,8 +49,8 @@ class App extends Component {
     const height = Number(image.height)
     return {
       leftCol: clarifaiFace.left_col * width,
-      rightCol: clarifaiFace.right_col * width,
-      topRow : width - (clarifaiFace.top_row * height),
+      rightCol: width - (clarifaiFace.right_col * width),
+      topRow : clarifaiFace.top_row * height,
       bottomRow: height - (clarifaiFace.bottom_row * height)
     }
   }
@@ -60,16 +60,21 @@ class App extends Component {
   }
 
   onInputChange = (event) => {
+    event.preventDefault()
     this.setState({ input: event.target.value })
+  }
+
+  clarifaiFun = () => {
+    clarifai.models.predict('a403429f2ddf4b49b307e318f00e528b', this.state.image)
+      .then((res) => this.displayFaceBox(this.calculateFaceLocation(res)))
+      .catch((err) => console.log(err))
   }
 
   buttonClicked = (event) => {
     event.preventDefault()
     if (this.state.input) {
-      this.setState({ image: this.state.input })
-      clarifai.models.predict('a403429f2ddf4b49b307e318f00e528b', this.state.image)
-      .then((res) => this.displayFaceBox(this.calculateFaceLocation(res)))
-      .catch((err) => console.log(err))
+      this.setState({ image: this.state.input },
+      () => this.clarifaiFun())
     }
   }
 
