@@ -1,0 +1,61 @@
+.signInDiv {
+    min-width: 340px;
+    max-width: 35%;
+    margin: 0 auto 20px auto;
+    padding: 10px 25px 30px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.register {
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+}
+hr {
+    margin-top: 30px;
+    width: 300px;
+    border: solid black 0.7px;
+}
+h1 {
+    padding-bottom: 20px;
+    text-decoration: underline;
+    color: black;
+}
+label {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+.signInForm input {
+    margin: 10px;
+    padding: 9px;
+    border: 2px solid black;
+    background: transparent;
+    display: block;
+    border-bottom-left-radius: 100px;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    border-bottom-right-radius: 100px;
+    outline: none;
+}
+
+.signInForm button {
+    cursor: pointer;
+    display: flex;
+    margin: 30px auto 0 auto;
+    background: transparent;
+    font-size: 22px;
+    /* padding: 10px 15px 10px 15px; */
+    /* border-radius: 100px; */
+    /* font-weight: bold; */
+    border: 2px solid rgb(12, 4, 4);
+    outline: none;
+    /* text-decoration: underline */
+}
+.signInForm input:hover {
+    background: black;
+    color: white;
+}
+

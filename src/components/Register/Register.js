@@ -1,10 +1,10 @@
 import React from 'react'
-import './signIn.css'
+// import './register.css'
 
-const SignIn = ({ login }) => {
+const Register = ({ login }) => {
   return (
     <div className='signInDiv'>
-      <h1>SignIn Form</h1>
+      <h1>Register</h1>
 
       <form className='signInForm' onSubmit={login}>
         <label htmlFor ='username'>User Name</label>
@@ -20,4 +20,4 @@ const SignIn = ({ login }) => {
   )
 }
 
-export default SignIn
+export default Register

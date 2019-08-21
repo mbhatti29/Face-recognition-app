@@ -2,3 +2,18 @@
     width: 540px;
     margin: -30px;
 }
+
+.searchInput {
+    border: none;
+    border-bottom-left-radius: 100px;
+    border-top-left-radius: 100px;
+    outline: none;
+}
+
+.grow {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-bottom-right-radius: 100px;
+    border-top-right-radius: 100px;
+}
