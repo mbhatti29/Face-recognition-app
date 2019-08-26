@@ -1,11 +1,7 @@
-.imageBox {
-    opacity: 0.8;
-
-}
-
 #inputImage {
     max-width: 500px;
     max-height: 600px; 
+    opacity: 0.9;
 }
 
 .bounding-box {

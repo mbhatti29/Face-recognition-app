@@ -1,20 +1,20 @@
 import React from 'react'
 import './signIn.css'
 
-const SignIn = ({ login }) => {
+const SignIn = ({ onRouteChange }) => {
   return (
     <div className='signInDiv'>
       <h1>SignIn Form</h1>
 
-      <form className='signInForm' onSubmit={login}>
+      <div className='signInForm' onSubmit={onRouteChange}>
         <label htmlFor ='username'>User Name</label>
         <input type='text' name='username' id='username' />
         <br/>
         <label htmlFor ='password'>Password</label>
         <input type='text' name='password' id='password' />
-        <button onSubmit={() => login('home')}>Submit</button>
-        <p className='register'>Register</p>
-      </form>
+        <button onClick={ () => onRouteChange('home') }>Submit</button>
+        <p onClick={ () => onRouteChange('register') } className='register'>Register</p>
+      </div>
       <hr/>
     </div>
   )

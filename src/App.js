@@ -86,35 +86,31 @@ class App extends Component {
       route : route
     })
   }
-  // signOut = () => {
-  //   this.setState({ route: 'signIn' })
-  // }
 
-  // login = () => {
-  //   this.setState({ route: 'home' })
-  // }
-
-  // componentDidMount() {
-  // }
+  componentDidMount() {
+  }
 
   render() {
+    const { route, box, image } = this.state;
+
     return (
       <div className="App">
         <Particles className='particles' 
           params = {particlesOptions}
         />
-        <Navigation route={this.state.route} signOut={() => this.routeChange('signIn')}/>
+        <Navigation route={route} onRouteChange={this.routeChange}/>
         <Logo />
-        { this.state.route === 'signIn' 
-          ? 
-            <div>
-              <SignIn login={() => this.routeChange('home')} />
-            </div>
-          : <div className='slider'>
+        { route === 'home' 
+          ? <div className='slider'>
               <Rank />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.buttonClicked} />
-              <FaceRecognition box={this.state.box} image={this.state.image} />
+              <FaceRecognition box={box} image={image} />
             </div>
+          : (
+            route === 'signIn'
+            ? <SignIn onRouteChange={this.routeChange} />
+            : <Register onRouteChange={this.routeChange} />
+            )
         }
       </div>
     )

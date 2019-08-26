@@ -1,20 +1,19 @@
 import React from 'react'
 // import './register.css'
 
-const Register = ({ login }) => {
+const Register = ({ onRouteChange }) => {
   return (
     <div className='signInDiv'>
       <h1>Register</h1>
 
-      <form className='signInForm' onSubmit={login}>
+      <div className='signInForm'>
         <label htmlFor ='username'>User Name</label>
         <input type='text' name='username' id='username' />
         <br/>
         <label htmlFor ='password'>Password</label>
         <input type='text' name='password' id='password' />
-        <button onSubmit={() => login('home')}>Submit</button>
-        <p className='register'>Register</p>
-      </form>
+        <button onClick={() => onRouteChange('home')}>Submit</button>
+      </div>
       <hr/>
     </div>
   )
