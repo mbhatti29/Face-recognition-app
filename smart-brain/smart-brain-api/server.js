@@ -52,8 +52,35 @@ app.post('/register', jsonParser, (req, res) => {
     entries: 0,
     joined: new Date().toLocaleDateString("en-US")
   })
-  res.json(db.users[db.users.length - 1] )
-  res.json('Registered User')
+  console.log('Registered New User');
+  res.json(db.users[db.users.length - 1])
+})
+
+app.get('/profile/:id', (req, res) => {
+  const { id } = req.params;
+  let status = false
+ 
+  db.users.forEach(user => {
+    if (user.id == id) {
+      status = true;
+      return res.json(user)
+    }
+  })
+  if (!status) { res.status(400).json('no such user')}
+})
+
+app.put('/image', jsonParser, (req, res) => {
+  const { id } = req.body;
+  let status = false
+
+  db.users.forEach(user => {
+    if (user.id == id) {
+      status = true;
+      user.entries++
+      return res.json(user.entries)
+    }
+  })
+  if (!status) { res.status(400).json('no such user') }
 })
 
 app.listen(server, () => {
