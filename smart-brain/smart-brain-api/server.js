@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const bcrypt = require('bcryptjs')
 const server = 3000;
 
 const app = express();
@@ -12,7 +13,6 @@ const db = {
       id: 123,
       name: 'John',
       email: 'john@gmail.com',
-      password: 'cookies',
       entries: 0,
       joined: new Date()
     },
@@ -20,7 +20,6 @@ const db = {
       id: 124,
       name: 'MB',
       email: 'MB@gmail.com',
-      password: 'cake',
       entries: 2,
       joined: new Date()
     }
@@ -33,6 +32,16 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', jsonParser, (req, res) => {
+
+  bcrypt.compare("hello", "$2a$10$pW1aWzcAlT4Rcndt2hQexeqIGHj9PButssqyozdumpzVL4GUdemMG", function (err, res) {
+    // res === true
+    console.log('first guess', res)
+  });
+  bcrypt.compare("baon", "$2a$10$pW1aWzcAlT4Rcndt2hQexeqIGHj9PButssqyozdumpzVL4GUdemMG", function (err, res) {
+    // res === false
+    console.log('second guess', res)
+  });
+
   if (req.body.email === db.users[0].email &&
    req.body.password === db.users[0].password) {
     res.json('success')
@@ -44,6 +53,14 @@ app.post('/signin', jsonParser, (req, res) => {
 
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
+
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
+      // Store hash in your password DB.
+      console.log(hash)
+    });
+  });
+
   db.users.push({
     id: db.users[db.users.length - 1].id + 1,
     name: name,
