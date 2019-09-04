@@ -87,8 +87,11 @@ class App extends Component {
     })
   }
 
-  componentDidMount() {
-  }
+  // componentDidMount() {
+  //   fetch('http://localhost:3001')
+  //     .then(res => res.json())
+  //     .then(console.log)
+  // }
 
   render() {
     const { route, box, image } = this.state;
