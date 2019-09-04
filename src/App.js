@@ -41,10 +41,30 @@ class App extends Component {
       input: '',
       image: "https://samples.clarifai.com/face-det.jpg",
       box: {},
-      route: 'signIn'
+      route: 'signIn',
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: '', 
+      }
     }
   }
   
+  loaderUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined,
+      }
+    })
+    console.log(this.state.user);
+  }
+
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputImage');
@@ -112,7 +132,7 @@ class App extends Component {
           : (
             route === 'signIn'
             ? <SignIn onRouteChange={this.routeChange} />
-            : <Register onRouteChange={this.routeChange} />
+            : <Register loadUser={this.loaderUser} onRouteChange={this.routeChange} />
             )
         }
       </div>

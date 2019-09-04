@@ -39,8 +39,11 @@ class SignIn extends React.Component {
     })
   }
 
+  register = () => {
+     this.props.onRouteChange('register')
+
+  }
   render() {
-    const onRouteChange = this.props
 
     return (  
       <div className='signInDiv'>
@@ -54,7 +57,7 @@ class SignIn extends React.Component {
           <input onChange={this.onPasswordChange} type='password' name='password' id='password' />
           <button onClick={this.onSubmitSignIn}>Submit</button>
         </div>
-          <p onClick={ () => onRouteChange('register') } className='register'>Register</p>
+          <p onClick={this.register} className='register'>Register</p>
         <hr/>
       </div>
         

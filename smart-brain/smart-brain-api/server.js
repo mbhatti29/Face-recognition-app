@@ -30,11 +30,14 @@ const db = {
   ]
 }
 
+// GET USERS
 app.get('/', (req, res) => {
   // res.send('<h1>App is working<h1>')
   res.send(db.users)
 })
 
+
+// SIGN-IN USERS
 app.post('/signin', jsonParser, (req, res) => {
 
   // bcrypt.compare("hello", "$2a$10$pW1aWzcAlT4Rcndt2hQexeqIGHj9PButssqyozdumpzVL4GUdemMG", function (err, res) {
@@ -55,6 +58,8 @@ app.post('/signin', jsonParser, (req, res) => {
    }
 })
 
+
+// REGISTER USERS
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
 
@@ -65,18 +70,28 @@ app.post('/register', jsonParser, (req, res) => {
     });
   });
 
-  db.users.push({
-    id: db.users[db.users.length - 1].id + 1,
-    name: name,
-    email: email,
-    password: password,
-    entries: 0,
-    joined: new Date().toLocaleDateString("en-US")
-  })
-  console.log('Registered New User');
-  res.json(db.users[db.users.length - 1])
+  if (name && password.length > 3) {
+    console.log('Registered New User');
+
+    db.users.push({
+      id: db.users[db.users.length - 1].id + 1,
+      name: name,
+      email: email,
+      // password: password,
+      entries: 0,
+      joined: new Date().toLocaleDateString("en-US")
+    })
+    res.json(db.users[db.users.length - 1])
+    // res.json('succesful registration')
+  } else {
+    // res.status(400).json('error logging in')
+    res.json('Error Registering User')
+
+  }
 })
 
+
+// GET THE USER
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
   let status = false
@@ -90,6 +105,7 @@ app.get('/profile/:id', (req, res) => {
   if (!status) { res.status(400).json('no such user')}
 })
 
+// UPDATE ENTRIES
 app.put('/image', jsonParser, (req, res) => {
   const { id } = req.body;
   let status = false
