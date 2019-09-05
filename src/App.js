@@ -46,7 +46,7 @@ class App extends Component {
         id: '',
         name: '',
         email: '',
-        entries: 0,
+        entries: '',
         joined: '', 
       }
     }
@@ -76,6 +76,7 @@ class App extends Component {
       topRow : clarifaiFace.top_row * height,
       bottomRow: height - (clarifaiFace.bottom_row * height)
     }
+
   }
 
   displayFaceBox = (box) => {
@@ -89,7 +90,25 @@ class App extends Component {
 
   clarifaiFun = () => {
     clarifai.models.predict('a403429f2ddf4b49b307e318f00e528b', this.state.image)
-      .then((res) => this.displayFaceBox(this.calculateFaceLocation(res)))
+      .then((res) => {
+        if (res) {
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              id: this.state.user.id,
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            this.setState(
+              Object.assign(this.state.user, { entries: data})
+            )
+          })
+       
+        }
+        this.displayFaceBox(this.calculateFaceLocation(res))
+      })
       .catch((err) => console.log(err))
   }
 
@@ -125,13 +144,13 @@ class App extends Component {
         <Logo />
         { route === 'home' 
           ? <div className='slider'>
-              <Rank />
+              <Rank name={ this.state.user.name } entries={ this.state.user.entries } />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.buttonClicked} />
               <FaceRecognition box={box} image={image} />
             </div>
           : (
             route === 'signIn'
-            ? <SignIn onRouteChange={this.routeChange} />
+            ? <SignIn loadUser={this.loaderUser} onRouteChange={this.routeChange} />
             : <Register loadUser={this.loaderUser} onRouteChange={this.routeChange} />
             )
         }

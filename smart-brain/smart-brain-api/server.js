@@ -51,8 +51,10 @@ app.post('/signin', jsonParser, (req, res) => {
 
   if (req.body.email === db.users[0].email &&
    req.body.password === db.users[0].password) {
-    res.json('success')
-    console.log(req.body);
+     res.json(db.users[0])
+    // res.json('success')
+    // console.log(req.body);
+    console.log('SignIn Succesful - ', db.users[0].name)
    } else {
     res.status(400).json('error logging in')
    }
