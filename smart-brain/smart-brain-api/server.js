@@ -2,33 +2,52 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
-const server = 3001;
+const knex = require('knex')
+// const pgp = require('pg-promise')();
+// const initOptions = {/* initialization options */ };
 
+const server = 3001;
 const app = express();
 const jsonParser = bodyParser.json()
 app.use(cors())
 
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: 'localhost',
+    user: 'postgres',
+    password: 'Hello.9123',
+    database: 'smartbrain'
+  }
+})
 
-const db = {
-  users: [
-    {
-      id: 123,
-      name: 'John',
-      email: 'john@gmail.com',
-      password: 'cookies',
-      entries: 0,
-      joined: new Date()
-    },
-    {
-      id: 124,
-      name: 'MB',
-      email: 'MB@gmail.com',
-      password: 'cake',
-      entries: 2,
-      joined: new Date()
-    }
-  ]
-}
+db.select().table('users')
+  .then(data => {
+    console.log(data)
+  })
+  .catch(err => {
+    console.log("Error occured", err)
+  })
+// const db = {
+//   users: [
+//     {
+//       id: 123,
+//       name: 'John',
+//       email: 'john@gmail.com',
+//       password: 'cookies',
+//       entries: 0,
+//       joined: new Date()
+//     },
+//     {
+//       id: 124,
+//       name: 'MB',
+//       email: 'MB@gmail.com',
+//       password: 'cake',
+//       entries: 2,
+//       joined: new Date()
+//     }
+//   ]
+// }
 
 // GET USERS
 app.get('/', (req, res) => {
@@ -64,32 +83,49 @@ app.post('/signin', jsonParser, (req, res) => {
 // REGISTER USERS
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
+  // let date = new Date();
 
-  bcrypt.genSalt(10, function (err, salt) {
-    bcrypt.hash(password, salt, function (err, hash) {
-      // Store hash in your password DB.
-      console.log(hash)
-    });
-  });
-
-  if (name && password.length > 3) {
-    console.log('Registered New User');
-
-    db.users.push({
-      id: db.users[db.users.length - 1].id + 1,
+  db('users')
+    .returning('*')
+    .insert({
       name: name,
       email: email,
-      // password: password,
-      entries: 0,
-      joined: new Date().toLocaleDateString("en-US")
-    })
-    res.json(db.users[db.users.length - 1])
-    // res.json('succesful registration')
-  } else {
-    // res.status(400).json('error logging in')
-    res.json('Error Registering User')
+      joined: new Date()
+  })
+  .then(user => {
+    res.json(user)
+  })
+  .catch(err => {
+    res.status(400).json("Unable to register")
+  })
 
-  }
+
+  // bcrypt.genSalt(10, function (err, salt) {
+  //   bcrypt.hash(password, salt, function (err, hash) {
+  //     // Store hash in your password DB.
+  //     console.log(hash)
+  //   });
+  // });
+
+
+  // if (name && password.length > 3) {
+  //   console.log('Registered New User');
+
+    // db.users.push({
+    //   id: db.users[db.users.length - 1].id + 1,
+    //   name: name,
+    //   email: email,
+    //   // password: password,
+    //   entries: 0,
+    //   joined: new Date().toLocaleDateString("en-US")
+    // })
+    // res.json(db.users[db.users.length - 1]) 
+    // res.json('succesful registration')
+  // } else {
+    // res.status(400).json('error logging in')
+  //   res.json('Error Registering User')
+
+  // }
 })
 
 
