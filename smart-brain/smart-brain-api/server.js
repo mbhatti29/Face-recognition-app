@@ -3,8 +3,6 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcryptjs')
 const cors = require('cors')
 const knex = require('knex')
-// const pgp = require('pg-promise')();
-// const initOptions = {/* initialization options */ };
 
 const server = 3001;
 const app = express();
@@ -21,33 +19,16 @@ const db = knex({
   }
 })
 
-db.select().table('users')
-  .then(data => {
-    console.log(data)
-  })
-  .catch(err => {
-    console.log("Error occured", err)
-  })
-// const db = {
-//   users: [
-//     {
-//       id: 123,
-//       name: 'John',
-//       email: 'john@gmail.com',
-//       password: 'cookies',
-//       entries: 0,
-//       joined: new Date()
-//     },
-//     {
-//       id: 124,
-//       name: 'MB',
-//       email: 'MB@gmail.com',
-//       password: 'cake',
-//       entries: 2,
-//       joined: new Date()
-//     }
-//   ]
-// }
+//! Select and get all users
+// db.select().table('users')
+//   .then(data => {
+//     console.log(data)
+//   })
+//   .catch(err => {
+//     console.log("Error occured", err)
+//   })
+
+
 
 // GET USERS
 app.get('/', (req, res) => {
@@ -83,7 +64,23 @@ app.post('/signin', jsonParser, (req, res) => {
 // REGISTER USERS
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
-  // let date = new Date();
+
+  db.transaction((trx => {
+    trx.insert({
+      hash: hash,
+      email: email
+    })
+
+  }))
+
+  db.transaction(trx => {
+    
+    .into('users')
+    .returning('email')
+    .then(loginEmail => {
+
+    })
+  })
 
   db('users')
     .returning('*')
@@ -99,13 +96,13 @@ app.post('/register', jsonParser, (req, res) => {
     res.status(400).json("Unable to register")
   })
 
-
-  // bcrypt.genSalt(10, function (err, salt) {
-  //   bcrypt.hash(password, salt, function (err, hash) {
-  //     // Store hash in your password DB.
-  //     console.log(hash)
-  //   });
-  // });
+  // password hash
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(password, salt, function (err, hash) {
+      // Store hash in your password DB.
+      console.log(hash)
+    });
+  });
 
 
   // if (name && password.length > 3) {
@@ -131,31 +128,33 @@ app.post('/register', jsonParser, (req, res) => {
 
 // GET THE USER
 app.get('/profile/:id', (req, res) => {
-  const { id } = req.params;
-  let status = false
+  let { id } = req.params;
  
-  db.users.forEach(user => {
-    if (user.id == id) {
-      status = true;
-      return res.json(user)
-    }
-  })
-  if (!status) { res.status(400).json('no such user')}
+  db.select('*').from('users').where({ id: id }) //both prop and value are the same so you can just use id instead of key:value
+    .then(user => {
+      user.length ? res.json(user[0]) : res.status(400).json('Not Found')
+    })
+    .catch(err => {
+      res.status(400).json('Error')
+    })
 })
+
 
 // UPDATE ENTRIES
 app.put('/image', jsonParser, (req, res) => {
-  const { id } = req.body;
-  let status = false
+  let { id } = req.body;
+  db("users").where("id", "=", id) 
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entry => {
+      res.json('User entry updated')
+      console.log(entry[0])
+    })
+    .catch(err => {
+      res.status(400).json("Error updating entry")
+    })
 
-  db.users.forEach(user => {
-    if (user.id == id) {
-      status = true;
-      user.entries++
-      return res.json(user.entries)
-    }
-  })
-  if (!status) { res.status(400).json('no such user') }
+  // if (!status) { res.status(400).json('no such user') }
 })
 
 app.listen(server, () => {
