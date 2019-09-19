@@ -19,110 +19,73 @@ const db = knex({
   }
 })
 
-//! Select and get all users
-// db.select().table('users')
-//   .then(data => {
-//     console.log(data)
-//   })
-//   .catch(err => {
-//     console.log("Error occured", err)
-//   })
-
-
-
 // GET USERS
 app.get('/', (req, res) => {
   // res.send('<h1>App is working<h1>')
   res.send(db.users)
 })
 
-
 // SIGN-IN USERS
 app.post('/signin', jsonParser, (req, res) => {
+  
+  db.select('email', 'hash').from('login').where('email', '=', req.body.email)
 
-  // bcrypt.compare("hello", "$2a$10$pW1aWzcAlT4Rcndt2hQexeqIGHj9PButssqyozdumpzVL4GUdemMG", function (err, res) {
-  //   // res === true
-  //   console.log('first guess', res)
-  // });
-  // bcrypt.compare("baon", "$2a$10$pW1aWzcAlT4Rcndt2hQexeqIGHj9PButssqyozdumpzVL4GUdemMG", function (err, res) {
-  //   // res === false
-  //   console.log('second guess', res)
-  // });
+    .then(data => {
+      bcrypt.compare(req.body.password, data[0].hash)
+      .then(response => {
+        if(response) {
+          return db.select('*').from('users').where('email', '=', req.body.email)
+            .then(user => {
+              res.json(user[0])
+            })
+            .catch(err => { res.status(400).json('Error logging in') })
+        } else {
+          res.status(400).json('Wrong Credentials')
+        }
+      })  
+    })
+    .catch(err => {
+      res.status(400).json('Wrong Credentials')
+    })
 
-  if (req.body.email === db.users[0].email &&
-   req.body.password === db.users[0].password) {
-     res.json(db.users[0])
-    // res.json('success')
-    // console.log(req.body);
-    console.log('SignIn Succesful - ', db.users[0].name)
-   } else {
-    res.status(400).json('error logging in')
-   }
 })
 
 
 // REGISTER USERS
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
-
-  db.transaction((trx => {
-    trx.insert({
-      hash: hash,
-      email: email
-    })
-
-  }))
-
-  db.transaction(trx => {
-    
-    .into('users')
-    .returning('email')
-    .then(loginEmail => {
-
-    })
-  })
-
-  db('users')
-    .returning('*')
-    .insert({
-      name: name,
-      email: email,
-      joined: new Date()
-  })
-  .then(user => {
-    res.json(user)
-  })
-  .catch(err => {
-    res.status(400).json("Unable to register")
-  })
-
-  // password hash
+  
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       // Store hash in your password DB.
-      console.log(hash)
+      db.transaction(trx => {
+        trx.insert({
+          hash: hash,
+          email: email
+        })
+        .into('login')
+        .returning('email')
+        .then(loginEmail => {
+          return trx('users')
+            .returning('*')
+            .insert({
+              name: name,
+              email: loginEmail[0],
+              joined: new Date()
+            })
+            .then(user => {
+              res.json(user)
+            })
+            .catch(err => {
+              res.json('Error registering User')
+            })
+        })
+        .then(trx.commit)
+        .catch(trx.rollback)
+      })
+      // res.status(400).json('Unable to Register!')
     });
   });
-
-
-  // if (name && password.length > 3) {
-  //   console.log('Registered New User');
-
-    // db.users.push({
-    //   id: db.users[db.users.length - 1].id + 1,
-    //   name: name,
-    //   email: email,
-    //   // password: password,
-    //   entries: 0,
-    //   joined: new Date().toLocaleDateString("en-US")
-    // })
-    // res.json(db.users[db.users.length - 1]) 
-    // res.json('succesful registration')
-  // } else {
-    // res.status(400).json('error logging in')
-  //   res.json('Error Registering User')
-
-  // }
 })
 
 
@@ -148,7 +111,6 @@ app.put('/image', jsonParser, (req, res) => {
     .returning('entries')
     .then(entry => {
       res.json('User entry updated')
-      console.log(entry[0])
     })
     .catch(err => {
       res.status(400).json("Error updating entry")
@@ -161,13 +123,10 @@ app.listen(server, () => {
   console.log('Server Started:', server);
 })
 
-
 /*
-
   /         ==> this is working
   /signIn   ==> POST  - success/fail
   /register ==> POST - user
   /profile/:userID ==> GET = user
   /image ==>   PUT - user
-
 */
