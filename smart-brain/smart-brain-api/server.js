@@ -21,7 +21,6 @@ const db = knex({
 
 // GET USERS
 app.get('/', (req, res) => {
-  // res.send('<h1>App is working<h1>')
   res.send(db.users)
 })
 
@@ -110,13 +109,11 @@ app.put('/image', jsonParser, (req, res) => {
     .increment('entries', 1)
     .returning('entries')
     .then(entry => {
-      res.json('User entry updated')
+      res.json(entry)
     })
     .catch(err => {
       res.status(400).json("Error updating entry")
     })
-
-  // if (!status) { res.status(400).json('no such user') }
 })
 
 app.listen(server, () => {
