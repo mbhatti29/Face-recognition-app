@@ -73,7 +73,7 @@ app.post('/register', jsonParser, (req, res) => {
               joined: new Date()
             })
             .then(user => {
-              res.json(user)
+              res.json(user[0])
             })
             .catch(err => {
               res.json('Error registering User')

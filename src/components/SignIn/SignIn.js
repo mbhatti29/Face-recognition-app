@@ -42,22 +42,22 @@ class SignIn extends React.Component {
 
   register = () => {
      this.props.onRouteChange('register')
-
   }
+  
   render() {
 
     return (  
       <div className='signInDiv'>
         <h1>SignIn Form</h1>
 
-        <form className='signInForm' onSubmit={this.onSubmitSignIn}>
+        <div className='signInForm' onSubmit={this.onSubmitSignIn}>
           <label htmlFor ='email'>User Name</label>
           <input onChange={this.onEmailChange} type='text' name='email' id='email' autoComplete="on" required/>
           <br/>
           <label htmlFor ='password'>Password</label>
           <input onChange={this.onPasswordChange} type='password' name='password' id='password' autoComplete="on" required/>
           <button onClick={this.onSubmitSignIn}>Submit</button>
-        </form>
+        </div>
           <p onClick={this.register} className='register'>Register</p>
         <hr/>
       </div>
