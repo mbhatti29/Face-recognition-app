@@ -26,14 +26,19 @@ app.get('/', (req, res) => {
 
 // SIGN-IN USERS
 app.post('/signin', jsonParser, (req, res) => {
-  
-  db.select('email', 'hash').from('login').where('email', '=', req.body.email)
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json('Error processing request')
+  }
+
+  db.select('email', 'hash').from('login').where('email', '=', email)
 
     .then(data => {
-      bcrypt.compare(req.body.password, data[0].hash)
+      bcrypt.compare(password, data[0].hash)
       .then(response => {
         if(response) {
-          return db.select('*').from('users').where('email', '=', req.body.email)
+          return db.select('*').from('users').where('email', '=', email)
             .then(user => {
               res.json(user[0])
             })
@@ -54,6 +59,9 @@ app.post('/signin', jsonParser, (req, res) => {
 app.post('/register', jsonParser, (req, res) => {
   const { email, name, password } = req.body
   
+  if (!email || !name || !password) {
+    return res.status(400).json('Error processing request')
+  }
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       // Store hash in your password DB.

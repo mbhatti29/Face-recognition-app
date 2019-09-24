@@ -52,8 +52,19 @@ class App extends Component {
     }
   }
   
+  // resetState = () => {
+  //   this.setState = {
+  //     input: '',
+  //     image: "https://samples.clarifai.com/face-det.jpg",
+  //     box: {},
+  //   }
+  // }
+
   loaderUser = (data) => {
     this.setState({
+      input: '',
+      image: "https://samples.clarifai.com/face-det.jpg",
+      box: {},
       user: {
         id: data.id,
         name: data.name,
@@ -105,6 +116,7 @@ class App extends Component {
               Object.assign(this.state.user, { entries: data})
             )
           })
+          .catch(console.log)
        
         }
         this.displayFaceBox(this.calculateFaceLocation(res))
