@@ -7,7 +7,7 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition'
 import SignIn from './components/SignIn/SignIn'
 import Register from './components/Register/Register'
 import Particles from 'react-particles-js'
-import Clarifai from 'clarifai'
+// import Clarifai from 'clarifai'
 import './App.css';
 
 
@@ -30,9 +30,9 @@ const particlesOptions = {
   }          
 
 }
-const clarifai = new Clarifai.App({
-  apiKey: '45ab6d95aa8b40e6bfe3fd0bd397068d'
-})
+// const clarifai = new Clarifai.App({
+//   apiKey: '45ab6d95aa8b40e6bfe3fd0bd397068d'
+// })
 
 class App extends Component {
   constructor(props) {
@@ -52,13 +52,6 @@ class App extends Component {
     }
   }
   
-  // resetState = () => {
-  //   this.setState = {
-  //     input: '',
-  //     image: "https://samples.clarifai.com/face-det.jpg",
-  //     box: {},
-  //   }
-  // }
 
   loaderUser = (data) => {
     this.setState({
@@ -73,7 +66,7 @@ class App extends Component {
         joined: data.joined,
       }
     })
-    // console.log(this.state.user);
+
   }
 
   calculateFaceLocation = (data) => {
@@ -100,8 +93,17 @@ class App extends Component {
   }
 
   clarifaiFun = () => {
-    clarifai.models.predict('a403429f2ddf4b49b307e318f00e528b', this.state.image)
-      .then((res) => {
+      fetch('http://localhost:3001/imageurl', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          input: this.state.input
+        })
+      })
+      .then(response => response.json())
+
+      .then(res => { 
+        // console.log(res)
         if (res) {
           fetch('http://localhost:3001/image', {
             method: 'put',
@@ -110,6 +112,7 @@ class App extends Component {
               id: this.state.user.id,
             })
           })
+          
           .then(res => res.json())
           .then(data => {
             this.setState(
@@ -117,12 +120,12 @@ class App extends Component {
             )
           })
           .catch(console.log)
-       
         }
         this.displayFaceBox(this.calculateFaceLocation(res))
       })
       .catch((err) => console.log(err))
   }
+
 
   buttonClicked = (event) => {
     event.preventDefault()

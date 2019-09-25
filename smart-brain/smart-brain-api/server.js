@@ -33,8 +33,15 @@ const db = knex({
 app.get('/', (req, res) => { res.send(db.users) })
 app.post('/signin', jsonParser, (req, res) =>  { signin.handleSignin(req, res, db, bcrypt) })
 app.post('/register', jsonParser, (req, res) =>  { register.handleRegister(req, res, db, bcrypt) })
-app.put('/image', jsonParser, (req, res) => { update.handleUpdate(req, res, db) })
 app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) })
+app.put('/image', jsonParser, (req, res) => { update.handleUpdate(req, res, db) })
+app.post('/imageurl', jsonParser, (req, res) => { update.handleImageApi(req, res) })
+
+app.listen(server, () => {
+  console.log('Server Started:', server);
+})
+
+
 // app.post('/register', jsonParser, (req, res) => {
 //   const { email, name, password } = req.body
   
@@ -74,9 +81,6 @@ app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) })
 //   });
 // })
 
-app.listen(server, () => {
-  console.log('Server Started:', server);
-})
 
 /*
   /         ==> this is working
