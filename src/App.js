@@ -101,7 +101,6 @@ class App extends Component {
         })
       })
       .then(response => response.json())
-
       .then(res => { 
         // console.log(res)
         if (res) {
@@ -112,7 +111,6 @@ class App extends Component {
               id: this.state.user.id,
             })
           })
-          
           .then(res => res.json())
           .then(data => {
             this.setState(

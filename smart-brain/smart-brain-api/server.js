@@ -9,7 +9,7 @@ const signin = require('./controllers/signin')
 const update = require('./controllers/update')
 const profile = require('./controllers/profile')
 
-const server = 3001;
+const server = process.env.PORT;
 const app = express();
 const jsonParser = bodyParser.json()
 app.use(cors())
@@ -36,6 +36,7 @@ app.post('/register', jsonParser, (req, res) =>  { register.handleRegister(req, 
 app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) })
 app.put('/image', jsonParser, (req, res) => { update.handleUpdate(req, res, db) })
 app.post('/imageurl', jsonParser, (req, res) => { update.handleImageApi(req, res) })
+
 
 app.listen(server, () => {
   console.log('Server Started:', server);
@@ -76,7 +77,7 @@ app.listen(server, () => {
 //         .then(trx.commit)
 //         .catch(trx.rollback)
 //       })
-//       // res.status(400).json('Unable to Register!')
+//        res.status(400).json('Unable to Register!')
 //     });
 //   });
 // })
